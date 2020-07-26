@@ -1,11 +1,11 @@
-git int 
+git init 
 git add
 git status
 git commit -m "first commit"
 git config --global user.email "benjaminfosso290@gmail"
 git config --global user.name "kingben290"
 git commit -m "first commit" 
-git remote add origin https://github.com/kingben290/kalata-banque.git
+git remote add origin https://github.com/kingben290/kalata-Banque.git
 git remote -v
 git push -u origin master
 git log 
