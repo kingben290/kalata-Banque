@@ -1,0 +1,2 @@
+1111111111;5000000;60000;Aucune operation effectuee
+1111;7348384;70000;Aucune operation effectuee

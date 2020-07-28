@@ -61,7 +61,7 @@ void ajout()
 
 	system("cls");
 	printf("*********EFFECTUER LA SASIE***********\n");
-    char s = 0;
+    char s = 0,*chaine[TAILLE_MAX];
     int n = 1;
 
     FILE* banque = fopen("banque.txt","a");
@@ -72,16 +72,16 @@ void ajout()
     }
     do{
     	printf("Client %d\n",n);
-    	/*printf("\nEntrer l'identifiant du client comportant 3 chiffres : ");
-        scanf("%[0-9]s",id.NCIN);
-        fflush(stdin);*/
-        do
+        printf("\nEntrer le numero identifiant : ");
+        gets(id.NCIN);
+         while(strlen(id.NCIN) != 3 )
         {
-            printf("\nEntrer l'identifiant du client comportant 3 chiffres : ");
+            printf("\nRe-entrer le numero comportant 9 chiffres : ");
             scanf("%[0-9]s",id.NCIN);
             getc(stdin);
-        }while(strlen(id.NCIN) != 3 );
+        }
         fprintf(banque,"%s;",id.NCIN);
+        getc(stdin);
         printf("\nEntrer le nom du client : ");
         scanf("%[^\n]",id.NOM);
         fflush(stdin);
@@ -97,7 +97,7 @@ void ajout()
         {
             printf("\nRe-entrer le numero comportant 9 chiffres : ");
             scanf("%[0-9]s",id.NUMERO);
-            getc(stdin);
+            gets(stdin);
         }
         fprintf(banque,"%s;",id.NUMERO);
         printf("\nEntrer la profession du client : ");
@@ -120,7 +120,7 @@ void ajout()
 void supprime()
 {
 		 char NCIN[9];
-		int premier = 1,d=0;
+		int i = 0, premier = 1,d=0;
 		char chaine[200] = "",temp[201] = "",*token = NULL,si,ncin[9];
 		FILE* banque = fopen("banque.txt","a"),*file_NCIN = fopen("banque_tmp.txt","w");
 		if(banque==NULL || file_NCIN==NULL)
@@ -135,7 +135,7 @@ void supprime()
 		{
 			remove("banque.txt");
 			printf("fichier supprimer avec succes !!");
-			menu_client();
+			//Menu();
 		}
 		else if(d==2)
 		{
@@ -150,8 +150,14 @@ void supprime()
 		        		goto found;  // sortie d'un nested construct de boucle
 		        	printf("\nEntrer l'identifiant' a supprimer : ");
 		        }
-		        scanf("%s",ncin);
+		        scanf("%d",ncin);
 		        fflush(stdin);
+		        while(strlen(ncin) != 9)
+		        {
+		            printf("\nRe-entrer le numero comportant 9 chiffres : ");
+		           	scanf("%[0-9^;]s",ncin);
+		           	fflush(stdin);
+		        }
 		        premier = 0;
 		    }while(rechercher(ncin)==0);
 		    while(fgets(chaine, 200, banque) != NULL)
@@ -179,7 +185,7 @@ void supprime()
 void modifier()
 {
 	FILE* banque = fopen("banque.txt","r"),*file_tmp = fopen("banque_tmp.txt","w");
-	char chaine[200], ncin[10], choix, *token = NULL, temp[200] = "" ,s=0;
+	char chaine[200], ncin[10], choix, *token = NULL, temp[200] = "" ,c ,s=0;
 	int n=1;
 
 	if(banque == NULL || file_tmp == NULL)
@@ -195,7 +201,7 @@ void modifier()
 	fflush(stdin);
 	if(choix == 'o'|| choix == 'O')
 	{
-		while(fgets(chaine,TAILLE_MAX,banque)!=NULL)
+		while(fgets(chaine,200,banque)!=NULL)
 		{
 			strcpy(temp,chaine);
 			token = strtok(chaine,";");
@@ -203,7 +209,6 @@ void modifier()
 			{
 			    printf("identifiant inexistant !!");
 				fprintf(file_tmp,"%s",temp);
-				menu_client();
 		    }else {
                     do{
                         printf("Client %d\n",n);
@@ -213,7 +218,7 @@ void modifier()
                         {
                             printf("\nRe-entrer le numero comportant 9 chiffres : ");
                             scanf("%[0-9]s",id.NCIN);
-                            getc(stdin);
+                            gets(stdin);
                         }
                         fprintf(file_tmp,"%s;",id.NCIN);
                         getc(stdin);
@@ -232,7 +237,7 @@ void modifier()
                         {
                             printf("\nRe-entrer le numero comportant 9 chiffres : ");
                             scanf("%[0-9]s",id.NUMERO);
-                            getc(stdin);
+                            gets(stdin);
                         }
                         fprintf(file_tmp,"%s;",id.NUMERO);
                         printf("\nEntrer la profession du client : ");
@@ -256,7 +261,7 @@ void modifier()
 	   }
    }else{
    printf("merci d'avoir utiliser notre programme !!!");
-   menu_client();
+   // Menu();
    }
    fclose(banque);
    fclose(file_tmp);
@@ -313,7 +318,7 @@ void afficher()
         printf("\tPRENOM: %s",t[i].PRENOM);
         printf("\tIDENTIFIANT : %s",t[i].NCIN);
         printf("\tPROFESSION : %s",t[i].PROFESSION);
-        printf("\tDATE DE CREATION: %s",t[i].DATE);
+        printf("\tDATE DE CREATION: %S/%S/%S\n",t[i].DATE);
     }
     printf("\n\n-----------------------------------------------------------------------------------------------------------------------\n\n");
     fclose(banque);
@@ -326,7 +331,7 @@ int rechercher() {
    	printf("Impossible d'ouvrir le fichier");
    	return -1;
    }
-   char*split = NULL;
+   char chaine, *split = NULL;
    while(fgets(chain,200,banque) != NULL)
     {
    		split = strtok(chain,";");
@@ -340,7 +345,7 @@ int rechercher() {
 }
 void recherche(char*NCIN,char*NOM)
 {
-	char chaine[TAILLE_MAX],*token = NULL, temp[200]="",s=0;
+	char *chaine[TAILLE_MAX],*token = NULL, temp[200]="",s=0;
 	FILE *banque = fopen("banque.txt","r");
 	int d=0;
 	do{
@@ -355,13 +360,13 @@ void recherche(char*NCIN,char*NOM)
 		printf("1-rechercher avec l'identifiant: ");
 		scanf("%s",id.NCIN);
 	}else{
-		printf("desolée cette option n'est valide");
+		printf("desol�e cette option n'est valide");
 	}
 
 	}while(d!=1 && d!=2);
 	if(d==1)
 	{
-		while(fgets(chaine, TAILLE_MAX, banque) != NULL)
+		while(fgets(chaine, 200, banque) != NULL)
 			{
 
                     strcpy(temp,chaine);
@@ -385,14 +390,14 @@ void recherche(char*NCIN,char*NOM)
 				afficher(NCIN);
 			else{
 				printf("cet identifiant n'existe pas !!");
-				menu_client();/*Menu();cette fonction ecrite par guylene permet de rentrer sur le menu apres avoir effectuer un choi
+				/*Menu();cette fonction ecrite par guylene permet de rentrer sur le menu apres avoir effectuer un choi
 				non desireux*/
 			}
 		}
 	}
 	else{
 		printf("choix non disponible !!");
-		menu_client();
+		// Menu();
 	}
 }
 
@@ -410,13 +415,11 @@ void menu_client()
 	         printf("\t\t *-*-*                                                                                   *-*-*\n");
 	         printf("\t\t *-*-*             MENUS:                                                                *-*-*\n");
 	         printf("\t\t *-*-*             =====                                                                 *-*-*\n");
-	         printf("\t\t *-*-*     [ 1- AJOUT CLIENT              ]      [ 3- SUPPRESSION           ]            *-*-*\n");
+	         printf("\t\t *-*-*     [ 1- AJOUT CLIENT              ]      [ 3- SUPPRESSION                 ]      *-*-*\n");
 	         printf("\t\t *-*-*                                                                                   *-*-*\n");
-	         printf("\t\t *-*-*     [ 2- MODIFICATION              ]      [ 4- RECHERCHE             ]            *-*-*\n");
+	         printf("\t\t *-*-*     [ 2- MODIFICATION              ]      [ 4- AFFICHER LES CLIENTS        ]      *-*-*\n");
 	         printf("\t\t *-*-*                                                                                   *-*-*\n");
-	         printf("\t\t *-*-*     [ 5- AFFICHER LES CLIENTS      ]      [ 6 - MENU -- GENERAL      ]            *-*-*\n");
-	         printf("\t\t *-*-*                                                                                   *-*-*\n");
-	         printf("\t\t *-*-*                                                                                   *-*-*\n");
+	         printf("\t\t *-*-*                     [ 5-       MENU -- GENERAL        ]                           *-*-*\n");
 	         printf("\t\t *-*-*                                                                                   *-*-*\n");
 	         printf("\t\t *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
 	         printf("\t\t *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
@@ -456,16 +459,12 @@ void selection_client()
             case 4:
                 system("cls");
                 charge();
-               // printf("Quel est le numero de CNI et le nom du client que vous voulez rechercher?   >:\n");
-                //scanf("%d%s", &NCIN, NOM);
+                printf("Quel est le numero de CNI et le nom du client que vous voulez rechercher?   >:\n");
+                scanf("%d%s", &NCIN, NOM);
                 recherche(NCIN, NOM);
             break;
             case 5:
-                system("cls");
-                charge();
-                afficher();
-            break;
-            case 6:
+
                 system("cls");
                 charge();
                 menu_main();
@@ -586,15 +585,15 @@ int nbr_compte()
             }
         fclose(fichier);
     }
-}
+}//correct
 
-//ici on �cri une fonction qui nous permettra d'entrer les differentes informations concernant chaque compte et pour cel�, on prend en param�tre un tableau de compte ainsi que le nombre de ces derniers
+//ici on ?cri une fonction qui nous permettra d'entrer les differentes informations concernant chaque compte et pour cel?, on prend en param?tre un tableau de compte ainsi que le nombre de ces derniers
 
 Compte*Creer()
 {
     /*
         On fait une allocation dynamique
-        Afin d'avoir une taille de tableau �gale aux nombre de compte entr� par l'utilisateur
+        Afin d'avoir une taille de tableau ?gale aux nombre de compte entr? par l'utilisateur
     */
 
     float SOLDE_COMPTE;
@@ -617,7 +616,7 @@ Compte*Creer()
             a : ajout
             a+ : ajout ,creation du fichier si non existant
         */
-        //ici on ouvre le fichier cr�e en utilisant tout simplement la syntaxe appropri� le fichier a �t� cr�e juste au dessus du commentaire pr�c�dent
+        //ici on ouvre le fichier cr?e en utilisant tout simplement la syntaxe appropri? le fichier a ?t? cr?e juste au dessus du commentaire pr?c?dent
         /*
         for(int i=0;i<nb_comptes;i++)
         {
@@ -664,12 +663,12 @@ Compte*Creer()
                 //printf("Vous pouvez debuter en effectuer les operations suivantes sur votre compte (Recharge, Retrait, Transaction).\n");
             }
 
-            if(fichier == NULL) //ici, on v�rifie tout simplement si l'ouverture du fichier s'est bien faite avec l'expression qui va s'afficher si elle s'est mal produite
+            if(fichier == NULL) //ici, on v?rifie tout simplement si l'ouverture du fichier s'est bien faite avec l'expression qui va s'afficher si elle s'est mal produite
             {
                 printf("Impossible d'ouvrir le fichier ! \n");
                 exit(0);
             }
-            //ici si le fichier s'est bien ouvert, on aura la possiblit� d'ajouter les differentes informations d'un candidat en respectant ce qu'a dit le projet chaque information doit etre s�par� de l'autre par le point virgule et pour pouvoir ajouter on a utilis� la fontion fprintf en respectant la syntaxe
+            //ici si le fichier s'est bien ouvert, on aura la possiblit? d'ajouter les differentes informations d'un candidat en respectant ce qu'a dit le projet chaque information doit etre s?par? de l'autre par le point virgule et pour pouvoir ajouter on a utilis? la fontion fprintf en respectant la syntaxe
 
             strcpy(TAB[i].Last_Operation, "Aucune operation effectuee");
             printf("%d     %d     %d    %s",TAB[i].Id_Client ,TAB[i].Id_Compte ,TAB[i].Solde, TAB[i].Last_Operation);
@@ -717,7 +716,7 @@ void Consultation_solde(const unsigned int ID_COMPTE)
     Compte donnees_compte;
     int i = 1;
     int j = nbr_compte();
-    FILE *fichier=fopen ("comptes.txt", "r");
+    FILE*fichier=fopen("comptes.txt", "r");
     if(fichier == NULL)
         exit(1);
     if(fichier!= NULL)
@@ -872,28 +871,28 @@ void menu_main(){
     int choix1, continu;
     do{
     system("cls");
-    system("color 3");
 	printf("\n\n\n\n\n\n\n");
-        printf("\t ~~-~~-~~-~~-~~-~~--~~-~~-~~-~~-~~-~~-~~-~ ****** ~~-~~-~~-~~-~~-~~-~~-~~-~~-~~-~~-~~-~~-~~-~~\n");
-        printf("\t ~~-~~-~~                                                                             ~~-~~-~~\n");
-        printf("\t **-**-**                  BIENVENUE DANS OUTILS DE GESTION DES BANQUES               **-**-**\n");
-        printf("\t **-**-**                  =============== ~~~~~ ===============                      **-**-**\n");
-        printf("\t ~~-~~-~~-~~-~~-~~--~~-~~-~~-~~-~~-~~-~~-~ ****** ~~-~~-~~-~~-~~-~~-~~-~~-~~-~~-~~-~~-~~-~~-~~\n");
-        printf("\t ~~-~~-~~                                                                             ~~-~~-~~\n");
-        printf("\t **-**-**           KALATA BANK- BANK SA  :                                           **-**-**\n");
-        printf("\t **-**-**            ======~~~~~~======                                               **-**-**\n");
-        printf("\t ~~-~~-~~                                                                             ~~-~~-~~\n");
-        printf("\t ~~-~~-~~     1 - GESTION DES CLIENTS                                                 ~~-~~-~~\n");
-        printf("\t **-**-**                                                                             **-**-**\n");
-        printf("\t **-**-**     2 - GESTION DES COMPTES                                                 **-**-**\n");
-        printf("\t ~~-~~-~~                                                                             ~~-~~-~~\n");
-        printf("\t ~~-~~-~~     3 - GESTION DES OPERATIONS                                              ~~-~~-~~\n");
-        printf("\t **-**-**                                                                             **-**-**\n");
-        printf("\t **-**-**     4 - QUITTER                                                             **-**-**\n");
-        printf("\t ~~-~~-~~                                                                             ~~-~~-~~\n");
-        printf("\t ~~-~~-~~-~~-~~-~~--~~-~~-~~-~~-~~-~~-~~-~ ****** ~~-~~-~~-~~-~~-~~-~~-~~-~~-~~-~~-~~-~~-~~-~~\n");
+	printf("\t\t *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
+	         printf("\t\t *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
+	         printf("\t\t *-*-*                                                                                   *-*-*\n");
+	         printf("\t\t *-*-*              BIENVENUE DANS LE MENU DE LA BANQUE KALATA - BANK SA                 *-*-*\n");
+	         printf("\t\t *-*-*                     =============== ***** ===============                         *-*-*\n");
+	         printf("\t\t *-*-*                                                                                   *-*-*\n");
+	         printf("\t\t *-*-*                                                                                   *-*-*\n");
+	         printf("\t\t *-*-*             MENUS:                                                                *-*-*\n");
+	         printf("\t\t *-*-*             =====                                                                 *-*-*\n");
+	         printf("\t\t *-*-*     [ 1- GESTION DES CLIENTS          ]      [ 3- GESTION DES OPERATIONS    ]     *-*-*\n");
+	         printf("\t\t *-*-*                                                                                   *-*-*\n");
+	         printf("\t\t *-*-*     [ 2- GESTION DES COMPTES          ]      [ 4- QUITTER                   ]     *-*-*\n");
+	         printf("\t\t *-*-*                                                                                   *-*-*\n");
+	         printf("\t\t *-*-*                                                                                   *-*-*\n");
+	         printf("\t\t *-*-*                                                                                   *-*-*\n");
+	         printf("\t\t *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
+	         printf("\t\t *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
 
 
+
+        //menu_main();
         printf("\t         Votre choix > >:\t");
         scanf("%d", &choix1);
         switch(choix1)
@@ -919,7 +918,7 @@ void menu_main(){
 
                 */
                 charge();
-                MenuOperation();
+
 
                 break;
             case 4:
@@ -976,7 +975,7 @@ void selection_compte()
                 Consultation_solde(ID_COMPTE);
             break;
             case 3:
-                //charge();
+                charge();
                 system("cls");
                 printf("Quel est le numero ID du compte que vous voulez supprimer?   >:\n");
                 scanf("%d", &ID_COMPTE);
@@ -1048,89 +1047,4 @@ int main()
 
     menu_main();
     return 0;
-}
-
-void retrait(unsigned int ID_COMPTE, int Solde)
-{
-    int somme=0, nouv_solde;
-    char c , chaine[TAILLE_MAX],token,temp;
-    FILE* compte = fopen("comptes.txt","a");
-    if(compte ==NULL)
-    {
-        printf("\nImpossible d'ouvrir le fichier");
-    	return;
-    }
-    printf("entrez l'identité  du compte : ");
-    scanf("%u",&ID_COMPTE);
-
-    do
-    {
-        printf("entrez le montant:");
-        scanf("%d",&somme);
-        if(Solde>=25000 && somme<250000)
-
-        while(fgets(chaine ,255 ,compte) != NULL)
-        {
-            strcpy(temp,chaine);
-            token = strtok(chaine,";");
-            if(strcmp(token,Solde) == 0 && Solde>=25000 && somme<250000 )
-                nouv_solde = Solde - somme;
-
-        }
-        printf("RETRAIT IMPOSSIBLE");
-        printf("voulez vous reessayer o/n? :");
-        scanf("%s",&c);
-        if(c=='n')
-            MenuOperation();
-    }while(nouv_solde<=25000 || c=='o' );
-    printf("RETRAIT EFFECTUER");
-}
-
-void MenuOperation()
-{
-            int choix, Solde;
-            unsigned int ID_COMPTE;
-    do{
-        printf("\t &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& KALATA_BANK &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n");
-        printf("\t &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& *-*-*-*-*-* &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n");
-        printf("\t &&&&&                                                                          &&&&&\n");
-        printf("\t *-*-*                             GESTION DES OPERQTIONS                       *-*-*\n");
-        printf("\t &&&&&                               ====== **** ======                         &&&&&\n");
-        printf("\t *-*-*                                                                          *-*-*\n");
-        printf("\t &&&&&                                                                          &&&&&\n");
-        printf("\t *-*-*                     MENU:                                                *-*-*\n");
-        printf("\t &&&&&                     ====                                                 &&&&&\n");
-        printf("\t *-*-*            1- RETRAIT                                                    *-*-*\n");
-        printf("\t &&&&&                                                                          &&&&&\n");
-        printf("\t *-*-*            2- VIREMENT                                                   *-*-*\n");
-        printf("\t &&&&&                                                                          &&&&&\n");
-        printf("\t *-*-*            3- MENU GENERAL                                               *-*-*\n");
-        printf("\t &&&&&                                                                          &&&&&\n");
-        printf("\t *-*-*                                                                          *-*-*\n");
-        printf("\t &&&&&&&&&&&&&&&&&&&&&&                                           &&&&&&&&&&&&&&&&&&&\n");
-
-           printf("\t *-*-*   Votre choix:\t");
-        scanf("%d\a",&choix);
-    }while(choix <= 0||choix>3);
-
-    switch(choix)
-    {
-         case 1:
-            system("cls");
-            retrait(ID_COMPTE, Solde);
-            printf("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
-            printf("\t OPERATION EFFECTUEE AVEC SUCCES ! ! !  \n");
-            printf("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
-            break;
-        case 2:
-            system("cls");
-            printf("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
-            printf("\t OPERATION EFFECTUEE AVEC SUCCES ! ! !  \n");
-            printf("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
-            break;
-        case 3:
-            system("cls");
-            menu_main();
-            break;
-    }
 }

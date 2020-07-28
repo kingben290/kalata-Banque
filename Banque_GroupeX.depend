@@ -1,0 +1,15 @@
+# depslib dependency file v1.0
+1595893274 source:c:\users\mogham\desktop\projet banque\clone2\banque_groupex\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<conio.h>
+	<ctype.h>
+
+1595949619 source:c:\users\guylaine\3d objects\banque_groupe 9\banque_groupe 9\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<conio.h>
+	<ctype.h>
+

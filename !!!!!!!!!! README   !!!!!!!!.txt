@@ -1,0 +1,1 @@
+SI IL N'EXISTE PAS, CREEZ DABORD MANUELLEMENT LE FICHIER "comptes.txt" avant d'utilser le programme
